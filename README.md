@@ -85,9 +85,16 @@ TMDSAS or The University of Texas System. Full provenance and disclaimer:
 
 ## Related analysis
 
-A narrative breakdown of these trends — acceptance rates, the Texas-resident
-advantage, and the reapplicant question — is published at
-[GradPilot](https://gradpilot.com/news/tmdsas-match-system-explained-how-it-works).
+Narrative breakdowns built on this dataset are published at GradPilot:
+
+- [TMDSAS Acceptance Rate: 10 Years of Texas Med School Admissions Data](https://gradpilot.com/news/tmdsas-acceptance-rates-admissions-data)
+  — the full dataset rendered as readable tables (funnel, residency, applicant
+  type, MCAT/GPA), with the out-of-state acceptance-vs-matriculation confusion
+  reconciled.
+- [TMDSAS Reapplicant Acceptance Rate: What the Texas Data Shows](https://gradpilot.com/news/tmdsas-reapplicant-acceptance-rate-data)
+  — reapplicant rates by year; the gap reflects metrics, not a reapplicant penalty.
+- [How the TMDSAS Match System Works](https://gradpilot.com/news/tmdsas-match-system-explained-how-it-works)
+  — plain-English explainer of pre-match offers and Match Day.
 
 ## Contributing
 

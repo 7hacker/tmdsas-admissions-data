@@ -1,0 +1,250 @@
+{
+  "jobIds": [
+    "9f135420-8b28-411f-83b3-ec1f2ebf4216"
+  ],
+  "results": [
+    {
+      "jobId": "9f135420-8b28-411f-83b3-ec1f2ebf4216",
+      "result": {
+        "data": {
+          "timestamp": "2026-05-31T05:48:21.41Z",
+          "rootActivityId": "cd044769-6007-45bc-b8bf-918a33a8f021",
+          "descriptor": {
+            "Select": [
+              {
+                "Kind": 1,
+                "Depth": 0,
+                "Value": "G0",
+                "Format": "0",
+                "GroupKeys": [
+                  {
+                    "Source": {
+                      "Entity": "Sheet1",
+                      "Property": "EntryYear"
+                    },
+                    "Calc": "G0",
+                    "IsSameAsSelect": true
+                  }
+                ],
+                "Name": "EntryYear"
+              },
+              {
+                "Kind": 1,
+                "Depth": 0,
+                "Value": "G1",
+                "GroupKeys": [
+                  {
+                    "Source": {
+                      "Entity": "Sheet1",
+                      "Property": "NonTrad"
+                    },
+                    "Calc": "G1",
+                    "IsSameAsSelect": true
+                  }
+                ],
+                "Name": "NonTrad"
+              },
+              {
+                "Kind": 2,
+                "Value": "M0",
+                "Format": "0",
+                "Name": "Cnt"
+              }
+            ],
+            "Expressions": {
+              "Primary": {
+                "Groupings": [
+                  {
+                    "Keys": [
+                      {
+                        "Source": {
+                          "Entity": "Sheet1",
+                          "Property": "EntryYear"
+                        },
+                        "Select": 0
+                      },
+                      {
+                        "Source": {
+                          "Entity": "Sheet1",
+                          "Property": "NonTrad"
+                        },
+                        "Select": 1
+                      }
+                    ],
+                    "Member": "DM0"
+                  }
+                ]
+              }
+            },
+            "Version": 2
+          },
+          "fromCache": false,
+          "dsr": {
+            "Version": 2,
+            "MinorVersion": 1,
+            "DS": [
+              {
+                "N": "DS0",
+                "PH": [
+                  {
+                    "DM0": [
+                      {
+                        "S": [
+                          {
+                            "N": "G0",
+                            "T": 4
+                          },
+                          {
+                            "N": "G1",
+                            "T": 1,
+                            "DN": "D0"
+                          },
+                          {
+                            "N": "M0",
+                            "T": 4
+                          }
+                        ],
+                        "C": [
+                          2016,
+                          0,
+                          7323
+                        ]
+                      },
+                      {
+                        "C": [
+                          2017,
+                          7324
+                        ],
+                        "R": 2
+                      },
+                      {
+                        "C": [
+                          2018,
+                          7373
+                        ],
+                        "R": 2
+                      },
+                      {
+                        "C": [
+                          2019,
+                          7715
+                        ],
+                        "R": 2
+                      },
+                      {
+                        "C": [
+                          2020,
+                          1,
+                          1967
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          5816
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2021,
+                          1,
+                          2502
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          6980
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2022,
+                          1,
+                          2302
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          6871
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2023,
+                          1,
+                          2106
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          6769
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2024,
+                          1,
+                          2234
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          6771
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2025,
+                          1,
+                          2309
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          7209
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2026,
+                          1,
+                          2593
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          7647
+                        ],
+                        "R": 1
+                      }
+                    ]
+                  }
+                ],
+                "IC": true,
+                "HAD": true,
+                "ValueDicts": {
+                  "D0": [
+                    "Traditional",
+                    "Non-Traditional"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

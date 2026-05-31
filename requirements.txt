@@ -1,0 +1,8 @@
+# The extractor (src/extract_tmdsas.py) uses ONLY the Python 3 standard library
+# (urllib, json, base64, csv) — there are NO third-party runtime dependencies,
+# and no browser is required.
+#
+# This file exists so that `make setup` produces a clean, reproducible venv and
+# so optional analysis tooling has a documented home. Uncomment as needed:
+#
+# pandas>=2.2        # only if you want to load/analyze the CSVs in data/cleaned/

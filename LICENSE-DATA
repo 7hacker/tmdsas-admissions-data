@@ -1,0 +1,27 @@
+CC0 1.0 Universal — applies to the contents of the data/ directory
+
+The person who associated a work with this deed has dedicated the work to the
+public domain by waiving all of his or her rights to the work worldwide under
+copyright law, including all related and neighboring rights, to the extent
+allowed by law.
+
+You can copy, modify, distribute and perform the work, even for commercial
+purposes, all without asking permission.
+
+----------------------------------------------------------------------
+WHY CC0 (and not a "real" license) FOR THE DATA
+----------------------------------------------------------------------
+
+The files in data/ are factual statistics (counts, averages) reproduced from a
+public source. Under U.S. law (Feist Publications, Inc. v. Rural Telephone
+Service Co., 499 U.S. 340 (1991)), facts are not copyrightable — they owe their
+origin to no act of authorship. We therefore do not, and could not, claim
+copyright over these numbers. CC0 is a public-domain DEDICATION/WAIVER: to the
+extent any rights exist in this compilation, we waive them. CC0 imposes no
+attribution requirement, but see the courtesy request below and DATA_SOURCE.md.
+
+ATTRIBUTION (requested as a courtesy, not required):
+  Data originally published by the Texas Medical & Dental Schools Application
+  Service (TMDSAS). Compiled in the open dataset 7hacker/tmdsas-admissions-data.
+
+Full legal code: https://creativecommons.org/publicdomain/zero/1.0/legalcode

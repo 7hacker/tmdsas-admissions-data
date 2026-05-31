@@ -1,0 +1,40 @@
+name: Refresh TMDSAS data
+
+# TMDSAS updates the dashboard roughly once per cycle, so this runs annually.
+# It also supports manual runs. The extractor needs no browser and no auth, so a
+# plain Ubuntu runner with stock Python is enough. Results land as a PR, never a
+# direct push to main — a human sanity-checks the numbers before they're published.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 12 1 9 *"   # 12:00 UTC on Sep 1 (start of the new application cycle)
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run extractor
+        run: python3 src/extract_tmdsas.py
+
+      - name: Open PR if data changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "data: refresh from TMDSAS dashboard"
+          branch: data/refresh
+          title: "Data refresh from TMDSAS dashboard"
+          body: |
+            Automated re-extraction from the TMDSAS public Power BI report.
+
+            **Please sanity-check the diff against the official dashboard before merging.**
+            Remember to bump the "data as of" stamp in DATA_SOURCE.md / README.md.

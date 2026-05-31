@@ -1,0 +1,278 @@
+{
+  "jobIds": [
+    "8258edf1-ff9c-484d-942a-b8b6e8ca8a6b"
+  ],
+  "results": [
+    {
+      "jobId": "8258edf1-ff9c-484d-942a-b8b6e8ca8a6b",
+      "result": {
+        "data": {
+          "timestamp": "2026-05-31T05:48:20.111Z",
+          "rootActivityId": "27fac5fb-ad30-44fa-ad15-84516ba0d09a",
+          "descriptor": {
+            "Select": [
+              {
+                "Kind": 1,
+                "Depth": 0,
+                "Value": "G0",
+                "Format": "0",
+                "GroupKeys": [
+                  {
+                    "Source": {
+                      "Entity": "Sheet1",
+                      "Property": "EntryYear"
+                    },
+                    "Calc": "G0",
+                    "IsSameAsSelect": true
+                  }
+                ],
+                "Name": "EntryYear"
+              },
+              {
+                "Kind": 1,
+                "Depth": 0,
+                "Value": "G1",
+                "GroupKeys": [
+                  {
+                    "Source": {
+                      "Entity": "Sheet1",
+                      "Property": "Reapply"
+                    },
+                    "Calc": "G1",
+                    "IsSameAsSelect": true
+                  }
+                ],
+                "Name": "Reapply"
+              },
+              {
+                "Kind": 2,
+                "Value": "M0",
+                "Format": "0",
+                "Name": "Cnt"
+              }
+            ],
+            "Expressions": {
+              "Primary": {
+                "Groupings": [
+                  {
+                    "Keys": [
+                      {
+                        "Source": {
+                          "Entity": "Sheet1",
+                          "Property": "EntryYear"
+                        },
+                        "Select": 0
+                      },
+                      {
+                        "Source": {
+                          "Entity": "Sheet1",
+                          "Property": "Reapply"
+                        },
+                        "Select": 1
+                      }
+                    ],
+                    "Member": "DM0"
+                  }
+                ]
+              }
+            },
+            "Version": 2
+          },
+          "fromCache": false,
+          "dsr": {
+            "Version": 2,
+            "MinorVersion": 1,
+            "DS": [
+              {
+                "N": "DS0",
+                "PH": [
+                  {
+                    "DM0": [
+                      {
+                        "S": [
+                          {
+                            "N": "G0",
+                            "T": 4
+                          },
+                          {
+                            "N": "G1",
+                            "T": 1,
+                            "DN": "D0"
+                          },
+                          {
+                            "N": "M0",
+                            "T": 4
+                          }
+                        ],
+                        "C": [
+                          2016,
+                          0,
+                          5589
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          1734
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2017,
+                          0,
+                          5540
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          1784
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2018,
+                          0,
+                          5684
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          1689
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2019,
+                          0,
+                          5983
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          1732
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2020,
+                          0,
+                          5903
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          1880
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2021,
+                          0,
+                          7341
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          2141
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2022,
+                          0,
+                          6890
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          2283
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2023,
+                          0,
+                          6813
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          2062
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2024,
+                          0,
+                          6919
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          2086
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2025,
+                          0,
+                          7430
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          2088
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2026,
+                          0,
+                          7849
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          2391
+                        ],
+                        "R": 1
+                      }
+                    ]
+                  }
+                ],
+                "IC": true,
+                "HAD": true,
+                "ValueDicts": {
+                  "D0": [
+                    "N",
+                    "Reapplicant"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

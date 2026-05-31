@@ -1,0 +1,314 @@
+{
+  "jobIds": [
+    "88ef8515-a747-4b93-944c-e7fec9db9bfb"
+  ],
+  "results": [
+    {
+      "jobId": "88ef8515-a747-4b93-944c-e7fec9db9bfb",
+      "result": {
+        "data": {
+          "timestamp": "2026-05-31T05:47:26.485Z",
+          "rootActivityId": "32bf341d-8fcf-41b4-a282-6234ea99d3e9",
+          "descriptor": {
+            "Select": [
+              {
+                "Kind": 1,
+                "Depth": 0,
+                "Value": "G0",
+                "Format": "0",
+                "GroupKeys": [
+                  {
+                    "Source": {
+                      "Entity": "Sheet1",
+                      "Property": "EntryYear"
+                    },
+                    "Calc": "G0",
+                    "IsSameAsSelect": true
+                  }
+                ],
+                "Name": "EntryYear"
+              },
+              {
+                "Kind": 1,
+                "Depth": 0,
+                "Value": "G1",
+                "GroupKeys": [
+                  {
+                    "Source": {
+                      "Entity": "Sheet1",
+                      "Property": "Residency"
+                    },
+                    "Calc": "G1",
+                    "IsSameAsSelect": true
+                  }
+                ],
+                "Name": "Residency"
+              },
+              {
+                "Kind": 2,
+                "Value": "M0",
+                "Format": "0",
+                "Name": "Cnt"
+              }
+            ],
+            "Expressions": {
+              "Primary": {
+                "Groupings": [
+                  {
+                    "Keys": [
+                      {
+                        "Source": {
+                          "Entity": "Sheet1",
+                          "Property": "EntryYear"
+                        },
+                        "Select": 0
+                      },
+                      {
+                        "Source": {
+                          "Entity": "Sheet1",
+                          "Property": "Residency"
+                        },
+                        "Select": 1
+                      }
+                    ],
+                    "Member": "DM0"
+                  }
+                ]
+              }
+            },
+            "Version": 2
+          },
+          "fromCache": false,
+          "dsr": {
+            "Version": 2,
+            "MinorVersion": 1,
+            "DS": [
+              {
+                "N": "DS0",
+                "PH": [
+                  {
+                    "DM0": [
+                      {
+                        "S": [
+                          {
+                            "N": "G0",
+                            "T": 4
+                          },
+                          {
+                            "N": "G1",
+                            "T": 1,
+                            "DN": "D0"
+                          },
+                          {
+                            "N": "M0",
+                            "T": 4
+                          }
+                        ],
+                        "C": [
+                          2016,
+                          0,
+                          1655
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          5668
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2017,
+                          2,
+                          4
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          1684
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          1,
+                          5636
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2018,
+                          0,
+                          1737
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          5636
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2019,
+                          2,
+                          1
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          1699
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          1,
+                          6015
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2020,
+                          0,
+                          1700
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          6083
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2021,
+                          0,
+                          2089
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          7393
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2022,
+                          2,
+                          1
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          2303
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          1,
+                          6869
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2023,
+                          0,
+                          2184
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          6691
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2024,
+                          2,
+                          1
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          2116
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          1,
+                          6888
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2025,
+                          0,
+                          2120
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          7398
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2026,
+                          2,
+                          1
+                        ]
+                      },
+                      {
+                        "C": [
+                          0,
+                          2132
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          1,
+                          8107
+                        ],
+                        "R": 1
+                      }
+                    ]
+                  }
+                ],
+                "IC": true,
+                "HAD": true,
+                "ValueDicts": {
+                  "D0": [
+                    "Non Resident",
+                    "Texas Resident",
+                    "Exception"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

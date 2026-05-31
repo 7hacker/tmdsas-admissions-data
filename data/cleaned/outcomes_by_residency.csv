@@ -1,0 +1,28 @@
+entry_year,residency,applicants,interviewed,accepted,matriculated
+2016,Non Resident,1655,480,273,140
+2016,Texas Resident,5668,2962,2280,2016
+2017,Exception,4,4,4,0
+2017,Non Resident,1684,473,268,134
+2017,Texas Resident,5636,2865,2262,1986
+2018,Non Resident,1737,624,280,149
+2018,Texas Resident,5636,3111,2244,1954
+2019,Exception,1,0,0,0
+2019,Non Resident,1699,461,266,126
+2019,Texas Resident,6015,3052,2214,1605
+2020,Non Resident,1700,549,305,175
+2020,Texas Resident,6083,3668,2444,2109
+2021,Non Resident,2089,670,283,157
+2021,Texas Resident,7393,4296,2631,2183
+2022,Exception,1,1,1,1
+2022,Non Resident,2303,617,346,199
+2022,Texas Resident,6869,3898,2888,2574
+2023,Non Resident,2184,762,360,188
+2023,Texas Resident,6691,4211,2978,2675
+2024,Exception,1,1,1,1
+2024,Non Resident,2116,957,372,200
+2024,Texas Resident,6888,4585,2927,2670
+2025,Non Resident,2120,973,357,207
+2025,Texas Resident,7398,4595,2938,2693
+2026,Exception,1,0,0,0
+2026,Non Resident,2132,783,146,0
+2026,Texas Resident,8107,3905,1103,0

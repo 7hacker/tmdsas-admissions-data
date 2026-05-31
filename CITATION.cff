@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: "TMDSAS Admissions Data (open reproduction)"
+message: "If you use this data, please cite it and the original TMDSAS source."
+type: dataset
+authors:
+  - family-names: Thacker
+    given-names: Nirmal
+repository-code: "https://github.com/7hacker/tmdsas-admissions-data"
+abstract: >-
+  An open, machine-readable reproduction of Texas Medical & Dental Schools
+  Application Service (TMDSAS) medical-school admissions statistics (entry years
+  2016-2026), extracted from the official public Power BI dashboard. Includes the
+  reproducible extraction script and cleaned CSVs covering the applicant ->
+  interviewed -> accepted -> matriculated funnel, Texas vs. non-Texas residency
+  outcomes, applicant-type breakdowns, and MCAT/GPA averages by cohort.
+keywords:
+  - TMDSAS
+  - medical school admissions
+  - Texas
+  - open data
+  - acceptance rates
+license: CC0-1.0
+date-released: "2026-05-30"

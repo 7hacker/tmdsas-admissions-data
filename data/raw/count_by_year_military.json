@@ -1,0 +1,278 @@
+{
+  "jobIds": [
+    "a231f7f8-1198-43dc-83b3-c1c9c582f90f"
+  ],
+  "results": [
+    {
+      "jobId": "a231f7f8-1198-43dc-83b3-c1c9c582f90f",
+      "result": {
+        "data": {
+          "timestamp": "2026-05-31T05:48:22.051Z",
+          "rootActivityId": "b3479f56-8224-43bd-80e2-236f212a4f1b",
+          "descriptor": {
+            "Select": [
+              {
+                "Kind": 1,
+                "Depth": 0,
+                "Value": "G0",
+                "Format": "0",
+                "GroupKeys": [
+                  {
+                    "Source": {
+                      "Entity": "Sheet1",
+                      "Property": "EntryYear"
+                    },
+                    "Calc": "G0",
+                    "IsSameAsSelect": true
+                  }
+                ],
+                "Name": "EntryYear"
+              },
+              {
+                "Kind": 1,
+                "Depth": 0,
+                "Value": "G1",
+                "GroupKeys": [
+                  {
+                    "Source": {
+                      "Entity": "Sheet1",
+                      "Property": "MilitaryYN"
+                    },
+                    "Calc": "G1",
+                    "IsSameAsSelect": true
+                  }
+                ],
+                "Name": "MilitaryYN"
+              },
+              {
+                "Kind": 2,
+                "Value": "M0",
+                "Format": "0",
+                "Name": "Cnt"
+              }
+            ],
+            "Expressions": {
+              "Primary": {
+                "Groupings": [
+                  {
+                    "Keys": [
+                      {
+                        "Source": {
+                          "Entity": "Sheet1",
+                          "Property": "EntryYear"
+                        },
+                        "Select": 0
+                      },
+                      {
+                        "Source": {
+                          "Entity": "Sheet1",
+                          "Property": "MilitaryYN"
+                        },
+                        "Select": 1
+                      }
+                    ],
+                    "Member": "DM0"
+                  }
+                ]
+              }
+            },
+            "Version": 2
+          },
+          "fromCache": false,
+          "dsr": {
+            "Version": 2,
+            "MinorVersion": 1,
+            "DS": [
+              {
+                "N": "DS0",
+                "PH": [
+                  {
+                    "DM0": [
+                      {
+                        "S": [
+                          {
+                            "N": "G0",
+                            "T": 4
+                          },
+                          {
+                            "N": "G1",
+                            "T": 1,
+                            "DN": "D0"
+                          },
+                          {
+                            "N": "M0",
+                            "T": 4
+                          }
+                        ],
+                        "C": [
+                          2016,
+                          0,
+                          7160
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          163
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2017,
+                          0,
+                          7176
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          148
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2018,
+                          0,
+                          7200
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          173
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2019,
+                          0,
+                          7553
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          162
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2020,
+                          0,
+                          7637
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          146
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2021,
+                          0,
+                          9323
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          159
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2022,
+                          0,
+                          9002
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          171
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2023,
+                          0,
+                          8731
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          144
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2024,
+                          0,
+                          8850
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          155
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2025,
+                          0,
+                          9374
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          144
+                        ],
+                        "R": 1
+                      },
+                      {
+                        "C": [
+                          2026,
+                          0,
+                          10074
+                        ]
+                      },
+                      {
+                        "C": [
+                          1,
+                          166
+                        ],
+                        "R": 1
+                      }
+                    ]
+                  }
+                ],
+                "IC": true,
+                "HAD": true,
+                "ValueDicts": {
+                  "D0": [
+                    "N",
+                    "Y"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -15,7 +15,9 @@ Usage:
 
 Outputs:
     data/raw/*.json          -- raw API responses (one per query, for audit)
-    data/cleaned/*.csv       -- tidy CSVs (the deliverables)
+    data/cleaned/*.csv       -- tidy CSVs (the deliverables), including the
+                                GPA x MCAT acceptance grid (a Texas analog of
+                                AAMC Table A-23) and its residency split.
     plus a printed run summary.
 
 The data is an *unofficial* reproduction of public aggregate figures. See
@@ -432,7 +434,10 @@ def main():
     # --- 6. scores_by_cohort.csv (best-effort, verified) ------------------
     scores_path = _build_scores(years)
 
-    # --- 7. Run summary ----------------------------------------------------
+    # --- 7. GPA × MCAT acceptance grid (pooled EY2020-2025) ---------------
+    grid_path, grid_res_path = build_gpa_mcat_grid()
+
+    # --- 8. Run summary ----------------------------------------------------
     print("\nFunnel by entry year:")
     print(f"{'year':>6}{'applicants':>12}{'interviewed':>13}"
           f"{'accepted':>11}{'matriculated':>14}")
@@ -450,7 +455,8 @@ def main():
                   f"{res_applicants[key]:<6} = {rate:6.1%}")
 
     print("\nFiles written:")
-    for p in [funnel_path, residency_path, type_path, scores_path]:
+    for p in [funnel_path, residency_path, type_path, scores_path,
+              grid_path, grid_res_path]:
         if p:
             print(f"  {p}")
     print("\nDone.")
@@ -566,6 +572,206 @@ def _build_scores(years):
             d = cohort_data[name][y]
             rows.append([y, name] + [d.get(p) for _, p in SCORE_COLS])
     return _write_csv("scores_by_cohort.csv", header, rows)
+
+
+# ---------------------------------------------------------------------------
+# GPA × MCAT acceptance grid  (the "what are my chances" cross-tab)
+# ---------------------------------------------------------------------------
+# The source exposes pre-binned columns:
+#   * "Overall GPA (bins)"     -- bins `Overall GPA` at width 0.1 (lower edge).
+#   * "MCAT B (MATRIX bins)"    -- bins total composite MCAT at width 5 (lower
+#                                  edge: 470, 475, ... 525).
+# The native 0.1-wide GPA bins are far too granular to publish (tiny cells), so
+# we roll GPA up into coarser, publishable bands (AAMC Table A-23 style). MCAT
+# keeps native 5-wide bins, with the sparse extremes collapsed into <490 and a
+# 520+ top band. Rows with a missing GPA or MCAT bin are dropped (a chances
+# grid needs both axes).
+#
+# Years EY2020-2025 are POOLED: these are completed cycles on the current bin
+# scheme, which gives adequate per-cell counts. EY2026 is in progress (partial
+# acceptances) and is excluded; EY2016-2019 are excluded to keep the pool to
+# recent, comparable cycles.
+GRID_YEARS = list(range(2020, 2026))          # 2020..2025 inclusive
+GRID_YEARS_LABEL = "EY2020-2025"
+SMALL_CELL_MIN = 10                            # suppress rates for n < this
+GPA_BIN_PROP = "Overall GPA (bins)"
+MCAT_BIN_PROP = "MCAT B (MATRIX bins)"
+ACCEPTED_LABEL = "Accepted"                    # IsAccepted "true" value
+
+
+def gpa_band(bin_value):
+    """
+    Roll a native 0.1-wide GPA bin lower-edge into a publishable band label.
+    The source emits float-noisy values (e.g. 3.6000000000000001); round to
+    1 dp first. Returns None for the junk 0.0 bin / missing values so those
+    rows are dropped from the grid.
+    """
+    if bin_value is None:
+        return None
+    try:
+        g = round(float(bin_value), 1)
+    except (TypeError, ValueError):
+        return None
+    if g < 1.0:                  # the 0.0 catch-all bin is not a real GPA
+        return None
+    if g < 3.00:
+        return "<3.00"
+    if g < 3.20:
+        return "3.00-3.19"
+    if g < 3.40:
+        return "3.20-3.39"
+    if g < 3.60:
+        return "3.40-3.59"
+    if g < 3.80:
+        return "3.60-3.79"
+    if g < 4.00:
+        return "3.80-3.99"
+    return "4.00"
+
+
+GPA_BAND_ORDER = ["<3.00", "3.00-3.19", "3.20-3.39", "3.40-3.59",
+                  "3.60-3.79", "3.80-3.99", "4.00"]
+
+
+def mcat_band(bin_value):
+    """
+    Roll a native 5-wide MCAT bin lower-edge into a publishable band label.
+    Collapses the sparse low tail into <490 and the high tail into 520+.
+    Returns None for a missing MCAT bin (row dropped from the grid).
+    """
+    if bin_value is None:
+        return None
+    try:
+        m = int(bin_value)
+    except (TypeError, ValueError):
+        return None
+    if m < 490:
+        return "<490"
+    if m >= 520:
+        return "520+"
+    return f"{m}-{m + 4}"        # 490-494, 495-499, ... 515-519
+
+
+MCAT_BAND_ORDER = ["<490", "490-494", "495-499", "500-504",
+                   "505-509", "510-514", "515-519", "520+"]
+
+
+def _accumulate_grid(rows, key_cols, year_idx, gpa_idx, mcat_idx,
+                     acc_idx, cnt_idx):
+    """
+    Fold decoded cross-tab rows into {key: [applicants, accepted]} where `key`
+    is built from the columns at `key_cols` indices (each passed through its
+    band function) PLUS any leading non-band keys (e.g. residency). Rows
+    outside GRID_YEARS, or with an undefined GPA/MCAT band, are skipped.
+
+    key_cols: list of (index, band_func_or_None) describing the grouping key.
+    """
+    grid = {}
+    for row in rows:
+        if int(row[year_idx]) not in GRID_YEARS:
+            continue
+        gband = gpa_band(row[gpa_idx])
+        mband = mcat_band(row[mcat_idx])
+        if gband is None or mband is None:
+            continue
+        key_parts = []
+        ok = True
+        for idx, fn in key_cols:
+            v = fn(row[idx]) if fn else row[idx]
+            if v is None:
+                ok = False
+                break
+            key_parts.append(v)
+        if not ok:
+            continue
+        key = tuple(key_parts)
+        cell = grid.setdefault(key, [0, 0])
+        cnt = int(row[cnt_idx])
+        cell[0] += cnt
+        if str(row[acc_idx]) == ACCEPTED_LABEL:
+            cell[1] += cnt
+    return grid
+
+
+def _grid_rows(grid, extra_cols=()):
+    """
+    Turn an accumulated grid dict into output rows, applying small-cell
+    suppression. `extra_cols` is the count of leading key columns before
+    (gpa_band, mcat_band); for the plain grid it's 0, for residency it's 1.
+    Output column order: <extra keys...>, gpa_bin, mcat_bin, applicants,
+    accepted, acceptance_rate, years_pooled, note.
+    """
+    out = []
+    suppressed = 0
+    # Stable ordering: extra keys (sorted), then GPA band order, MCAT band order.
+    extra_keys = sorted({k[:extra_cols] for k in grid}) if extra_cols else [()]
+    for ek in extra_keys:
+        for gband in GPA_BAND_ORDER:
+            for mband in MCAT_BAND_ORDER:
+                key = ek + (gband, mband)
+                if key not in grid:
+                    continue
+                applicants, accepted = grid[key]
+                if applicants < SMALL_CELL_MIN:
+                    rate = ""
+                    note = f"low_n (<{SMALL_CELL_MIN})"
+                    suppressed += 1
+                else:
+                    rate = round(accepted / applicants, 4)
+                    note = ""
+                out.append(list(ek) + [gband, mband, applicants, accepted,
+                                       rate, GRID_YEARS_LABEL, note])
+    return out, suppressed
+
+
+def build_gpa_mcat_grid():
+    """
+    Build the GPA × MCAT acceptance grid (pooled EY2020-2025) and its
+    residency-split sibling, each from ONE grouped cross-tab query.
+    Returns (overall_path, residency_path).
+    """
+    # --- Overall grid: EntryYear × GPA-bin × MCAT-bin × IsAccepted ----------
+    rows, _ = run_grouped_count(
+        ["EntryYear", GPA_BIN_PROP, MCAT_BIN_PROP, "IsAccepted"],
+        "grid_gpa_mcat.json")
+    grid = _accumulate_grid(
+        rows, key_cols=[(1, gpa_band), (2, mcat_band)],
+        year_idx=0, gpa_idx=1, mcat_idx=2, acc_idx=3, cnt_idx=4)
+    out_rows, suppressed = _grid_rows(grid, extra_cols=0)
+    overall_path = _write_csv(
+        "acceptance_by_gpa_mcat.csv",
+        ["gpa_bin", "mcat_bin", "applicants", "accepted",
+         "acceptance_rate", "years_pooled", "note"],
+        out_rows)
+
+    # --- Residency grid: + Residency on the key ----------------------------
+    rrows, _ = run_grouped_count(
+        ["EntryYear", "Residency", GPA_BIN_PROP, MCAT_BIN_PROP, "IsAccepted"],
+        "grid_gpa_mcat_residency.json")
+    # Keep only the two real residency classes (drop tiny "Exception").
+    rrows = [r for r in rrows if r[1] in ("Texas Resident", "Non Resident")]
+    rgrid = _accumulate_grid(
+        rrows, key_cols=[(1, None), (2, gpa_band), (3, mcat_band)],
+        year_idx=0, gpa_idx=2, mcat_idx=3, acc_idx=4, cnt_idx=5)
+    rout_rows, rsuppressed = _grid_rows(rgrid, extra_cols=1)
+    residency_path = _write_csv(
+        "acceptance_by_gpa_mcat_residency.csv",
+        ["residency", "gpa_bin", "mcat_bin", "applicants", "accepted",
+         "acceptance_rate", "years_pooled", "note"],
+        rout_rows)
+
+    # --- Run summary for the grid ------------------------------------------
+    print(f"\nGPA × MCAT grid ({GRID_YEARS_LABEL}):")
+    print(f"  overall cells: {len(out_rows)} "
+          f"({suppressed} suppressed for n<{SMALL_CELL_MIN})")
+    print(f"  residency cells: {len(rout_rows)} "
+          f"({rsuppressed} suppressed for n<{SMALL_CELL_MIN})")
+    # Spot-check the top-right (high GPA + high MCAT) cell.
+    tr = grid.get(("4.00", "515-519"))
+    if tr and tr[0]:
+        print(f"  GPA 4.00 × MCAT 515-519: {tr[1]}/{tr[0]} = "
+              f"{tr[1] / tr[0]:.1%} accepted")
+    return overall_path, residency_path
 
 
 if __name__ == "__main__":

@@ -70,6 +70,39 @@ integer indices. The `S` header tags such a column with a `DN` key (e.g.
 - **Scores**: Average aggregation (Power BI Function `1`) of `MCAT`, the four
   section scores, and the two GPAs, by `EntryYear`, with optional `WHERE`
   filters for the accepted / matriculated cohorts.
+- **GPA × MCAT grid**: two grouped cross-tab queries (see next section).
+
+### 4. The GPA × MCAT acceptance grid
+
+`build_gpa_mcat_grid()` produces `acceptance_by_gpa_mcat.csv` and
+`acceptance_by_gpa_mcat_residency.csv` — a Texas analog of AAMC Table A-23.
+
+- **Source bins.** The model exposes pre-binned columns, confirmed via the
+  report's `conceptualschema` endpoint:
+  - `Overall GPA (bins)` — bins `Overall GPA` at **width 0.1** (lower-edge
+    values, emitted with float noise e.g. `3.6000000000000001`).
+  - `MCAT B (MATRIX bins)` — bins the total composite MCAT (`LastCompB`) at
+    **width 5** (lower-edge values `470, 475, … 525`).
+- **One query per grid.** The whole cross-tab comes back in a single grouped
+  count: `EntryYear × Overall GPA (bins) × MCAT B (MATRIX bins) × IsAccepted`
+  for the overall grid, and the same with `Residency` added for the split.
+  `accepted` = the `IsAccepted = "Accepted"` sub-count of each cell.
+- **Re-binning for publishability.** Native 0.1-wide GPA bins are too granular,
+  so GPA is rolled up into bands `<3.00, 3.00-3.19, 3.20-3.39, 3.40-3.59,
+  3.60-3.79, 3.80-3.99, 4.00`. MCAT keeps native 5-wide bands with the sparse
+  tails collapsed into `<490` and `520+`. The exact buckets are in the data
+  dictionary.
+- **Pooling EY2020-2025.** Six **completed** cycles on the current bin scheme
+  are pooled for adequate per-cell counts. EY2026 (in progress, partial
+  acceptances) is excluded; EY2016-2019 are excluded to keep the pool recent
+  and comparable.
+- **Dropped rows.** Applicants with the catch-all `0.0` GPA bin or **no MCAT**
+  on file (null MCAT bin) are excluded — a chances grid needs both axes.
+- **Small-cell suppression.** Cells with `< 10` pooled applicants keep their
+  counts but have a blank `acceptance_rate` and a `low_n (<10)` note, so noisy
+  rates are never published. (1 cell suppressed in the overall grid, 7 in the
+  residency grid, all in the extreme high-GPA-low-MCAT / low-GPA-high-MCAT
+  corners.)
 
 ## How to reproduce
 
@@ -79,9 +112,10 @@ No dependencies beyond Python 3 standard library:
 python3 src/extract_tmdsas.py
 ```
 
-This makes ~20 polite POST requests (one per grouped/averaged query), writes
-the raw JSON responses to `data/raw/`, the tidy CSVs to `data/cleaned/`, and
-prints a run summary including the funnel table and residency acceptance rates.
+This makes ~22 polite POST requests (one per grouped/averaged query, including
+the two GPA × MCAT grid cross-tabs), writes the raw JSON responses to
+`data/raw/`, the tidy CSVs to `data/cleaned/`, and prints a run summary
+including the funnel table, residency acceptance rates, and the grid summary.
 
 ## Verification performed
 
@@ -94,6 +128,12 @@ prints a run summary including the funnel table and residency acceptance rates.
 - **Score averages are plausible**: total MCAT ~506 for all applicants, higher
   (~512) for accepted/matriculated; section scores sum to the total; GPAs
   ~3.5-3.8. Averages were confirmed to be averages (not sums) before shipping.
+- **GPA × MCAT grid is monotonic-ish and well-anchored**: acceptance rate rises
+  with both GPA and MCAT; bottom-left (`<3.00 × <490`) ≈ 2%, top-right
+  (`4.00 × 520+`) ≈ 83%. The MCAT marginal climbs 2.5% → 40% (`505-509`) → 77%
+  (`520+`); pooled overall ≈ 39% (matches the EY2020-2025 funnel). Residency
+  split: within the same cell, Texas Resident ≫ Non Resident (e.g.
+  `4.00 × 515-519`: ~93% vs ~38%).
 
 ## Known caveats
 

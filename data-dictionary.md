@@ -107,3 +107,56 @@ Average academic metrics by cohort and entry year.
 > total sits in the valid 472-528 MCAT band (~506 all-applicants), and the
 > accepted/matriculated cohorts score higher than all-applicants — all
 > consistent with real admissions data. Values are rounded to 3 decimals.
+
+## `data/cleaned/acceptance_by_gpa_mcat.csv`
+
+The **GPA × MCAT acceptance grid** — a "what are my chances at a Texas med
+school" cross-tab, the Texas analog of AAMC Table A-23 (which has no public
+Texas equivalent). One row per (GPA band, MCAT band) cell, **pooling completed
+cycles EY2020-2025**.
+
+| column | type | definition / derivation |
+|---|---|---|
+| `gpa_bin` | string | Overall-GPA band (see buckets below). Rolled up from the source `Overall GPA (bins)` column (native 0.1-wide lower-edge bins). |
+| `mcat_bin` | string | Total-MCAT band (see buckets below). Rolled up from `MCAT B (MATRIX bins)` (native 5-wide lower-edge bins on the total composite). |
+| `applicants` | int | Pooled applicants in that cell across EY2020-2025. |
+| `accepted` | int | Of those, applicants with `IsAccepted` = `Accepted`. |
+| `acceptance_rate` | float | `accepted / applicants`, rounded to 4 dp. **Blank** when `applicants < 10` (small-cell suppression). |
+| `years_pooled` | string | Always `EY2020-2025` (the pooled window). |
+| `note` | string | `low_n (<10)` when the cell was suppressed; empty otherwise. |
+
+**GPA bands** (`gpa_bin`): `<3.00`, `3.00-3.19`, `3.20-3.39`, `3.40-3.59`,
+`3.60-3.79`, `3.80-3.99`, `4.00`. Each band is the half-open interval on its
+label (e.g. `3.60-3.79` = `[3.60, 3.80)`); `4.00` is the top edge.
+
+**MCAT bands** (`mcat_bin`): `<490`, `490-494`, `495-499`, `500-504`,
+`505-509`, `510-514`, `515-519`, `520+`. Each interior band is a 5-wide native
+bin; the sparse low/high tails are collapsed into `<490` and `520+`.
+
+> **Dropped rows.** Applicants whose source GPA bin is the catch-all `0.0`
+> junk bin, or who have **no MCAT** on file (the `MCAT B (MATRIX bins)` null
+> bucket, ~15k applicants), are excluded — a chances grid requires both axes.
+>
+> **Small-cell suppression.** Cells with fewer than **10** pooled applicants
+> keep their counts but have a **blank** `acceptance_rate` and a `low_n (<10)`
+> note, so no noisy rates are published.
+>
+> **Sanity-checked.** Rates rise monotonically-ish with both higher GPA and
+> higher MCAT; bottom-left (`<3.00 × <490`) ≈ 2%, top-right (`4.00 × 520+`) ≈
+> 83%. The MCAT marginal climbs 2.5% (`<490`) → 40% (`505-509`) → 77%
+> (`520+`); pooled overall ≈ 39%.
+
+## `data/cleaned/acceptance_by_gpa_mcat_residency.csv`
+
+The same grid **split by Texas-residency**, since resident odds vastly exceed
+non-resident odds. Same columns as above plus a leading `residency` column.
+
+| column | type | definition / derivation |
+|---|---|---|
+| `residency` | string | `Texas Resident` or `Non Resident`. (The tiny `Exception` class is dropped.) |
+| `gpa_bin` … `note` | — | Identical to `acceptance_by_gpa_mcat.csv`, but counts/rates are within the residency × cell. |
+
+> **Sanity-checked.** Within the **same** (GPA, MCAT) cell, the Texas Resident
+> rate is far higher than Non Resident — e.g. `4.00 × 515-519`: TX ≈ 93% vs
+> Non Resident ≈ 38%; `3.80-3.99 × 510-514`: TX ≈ 71% vs ≈ 23%. Consistent
+> with the ~40% resident / ~17% non-resident headline gap.

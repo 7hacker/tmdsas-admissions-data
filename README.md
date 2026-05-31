@@ -22,6 +22,8 @@ so the extraction is fully reproducible.
 | [`data/cleaned/outcomes_by_residency.csv`](data/cleaned/outcomes_by_residency.csv) | Same funnel split by **Texas resident vs. non-resident** |
 | [`data/cleaned/outcomes_by_applicant_type.csv`](data/cleaned/outcomes_by_applicant_type.csv) | Funnel for **reapplicant / non-traditional / military** applicants |
 | [`data/cleaned/scores_by_cohort.csv`](data/cleaned/scores_by_cohort.csv) | Average **MCAT** (total + 4 sections) and **GPA** (overall + BCPM) by cohort |
+| [`data/cleaned/acceptance_by_gpa_mcat.csv`](data/cleaned/acceptance_by_gpa_mcat.csv) | **GPA × MCAT acceptance-rate grid** (the Texas analog of AAMC Table A-23), pooled EY2020–2025 |
+| [`data/cleaned/acceptance_by_gpa_mcat_residency.csv`](data/cleaned/acceptance_by_gpa_mcat_residency.csv) | Same GPA × MCAT grid, split by **Texas resident vs. non-resident** |
 | [`data/raw/`](data/raw/) | Verbatim API responses, kept for audit/trust |
 | [`data-dictionary.md`](data-dictionary.md) | Every column defined, with derivation notes |
 | [`docs/methodology.md`](docs/methodology.md) | Exactly how the data is extracted + caveats |
@@ -93,6 +95,12 @@ Narrative breakdowns built on this dataset are published at GradPilot:
   reconciled.
 - [TMDSAS Reapplicant Acceptance Rate: What the Texas Data Shows](https://gradpilot.com/news/tmdsas-reapplicant-acceptance-rate-data)
   — reapplicant rates by year; the gap reflects metrics, not a reapplicant penalty.
+- [Texas Medical School Acceptance Rate by GPA and MCAT](https://gradpilot.com/news/tmdsas-acceptance-rate-by-gpa-and-mcat)
+  — the GPA × MCAT "chances" grid built from `acceptance_by_gpa_mcat*.csv`, by residency.
+- [Is It Harder to Get Into Texas Medical School Now?](https://gradpilot.com/news/is-it-harder-to-get-into-texas-medical-school)
+  — acceptance rate flat ~35% for a decade while the MCAT/GPA bar rose.
+- [TMDSAS Out-of-State Acceptance Rate](https://gradpilot.com/news/tmdsas-out-of-state-acceptance-rate)
+  — the real ~16% non-resident rate, the 90% cap, and why half of OOS admits enroll elsewhere.
 - [How the TMDSAS Match System Works](https://gradpilot.com/news/tmdsas-match-system-explained-how-it-works)
   — plain-English explainer of pre-match offers and Match Day.
 

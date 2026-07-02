@@ -160,3 +160,43 @@ non-resident odds. Same columns as above plus a leading `residency` column.
 > rate is far higher than Non Resident — e.g. `4.00 × 515-519`: TX ≈ 93% vs
 > Non Resident ≈ 38%; `3.80-3.99 × 510-514`: TX ≈ 71% vs ≈ 23%. Consistent
 > with the ~40% resident / ~17% non-resident headline gap.
+
+## `data/cleaned/outcomes_by_age.csv`
+
+Applicant **age** distribution and outcomes, one row per integer age,
+**pooling completed cycles EY2020-2025**. Source column `Age` is an integer
+(conceptualschema `DataType 4`, `FormatString "0"`) reported at
+**individual-year granularity** — the dashboard exposes one row per exact age
+(observed range 14-79), so cells of size 1 are visible in the public report.
+
+| column | type | definition / derivation |
+|---|---|---|
+| `age` | int | Applicant age (`Age`), individual integer. |
+| `applicants` | int | Pooled applicants at that age across EY2020-2025. |
+| `accepted` | int | Of those, applicants with `IsAccepted` not "no". |
+| `matriculated` | int | Of those, applicants with `IsMatriculated` not "no". |
+| `acceptance_rate` | float | `accepted / applicants`, 4 dp. **Blank** when `applicants < 10`. |
+| `matriculation_rate` | float | `matriculated / applicants`, 4 dp. **Blank** when `applicants < 10`. |
+| `years_pooled` | string | Always `EY2020-2025`. |
+
+> **Small-n / re-identification.** Ages outside roughly 18-45 have very few
+> applicants (single digits, often exactly 1). Rates are **blanked** below 10
+> applicants. Because the source exposes age at individual granularity, the
+> extreme tail (e.g. a lone applicant aged 73 or 79) is identifiable in the
+> public data; the published distribution is the modal-21, median-22 bulk.
+>
+> **Sanity-checked.** Acceptance rate peaks ~44-50% around age 20-21, declines
+> through the mid-20s, and settles around ~20-22% across the 26-44 range
+> (noisy in the small-n tail) — it does **not** collapse to zero with age.
+
+## `data/cleaned/age_by_residency.csv`
+
+Applicant age split by Texas-residency (`Texas Resident` / `Non Resident`),
+pooled EY2020-2025. One row per (age, residency).
+
+| column | type | definition / derivation |
+|---|---|---|
+| `age` | int | Applicant age (`Age`). |
+| `residency` | string | `Texas Resident` or `Non Resident` (the tiny `Exception` class is dropped). |
+| `applicants` | int | Pooled applicants in that (age, residency) cell across EY2020-2025. |
+| `years_pooled` | string | Always `EY2020-2025`. |

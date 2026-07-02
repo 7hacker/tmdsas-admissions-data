@@ -298,6 +298,120 @@ def flag_counts_by_year(rows, true_labels):
 
 
 # ---------------------------------------------------------------------------
+# Applicant AGE distribution & outcomes
+# ---------------------------------------------------------------------------
+# `Age` is an integer column (conceptualschema DataType 4, FormatString "0"),
+# the applicant's age, exposed at INDIVIDUAL-year granularity (e.g. 14..79).
+# We pool completed cycles EY2020-2025 for the headline outcomes file and also
+# emit an all-years (EY2016-2026) raw distribution.
+AGE_POOL_YEARS = list(range(2020, 2026))       # 2020..2025 inclusive
+AGE_POOL_LABEL = "EY2020-2025"
+AGE_SMALL_N = 10                               # blank rates below this n
+
+
+def _age_counts(rows, year_filter=None):
+    """[year, age, count] -> {age: total count} (optionally year-filtered)."""
+    out = {}
+    for year, age, count in rows:
+        if age is None:
+            continue
+        if year_filter is not None and int(year) not in year_filter:
+            continue
+        a = int(age)
+        out[a] = out.get(a, 0) + int(count)
+    return out
+
+
+def _age_flag_true(rows, false_label="no", year_filter=None):
+    """[year, age, flag_label, count] -> {age: count where flag is true}."""
+    out = {}
+    for year, age, label, count in rows:
+        if age is None:
+            continue
+        if year_filter is not None and int(year) not in year_filter:
+            continue
+        if label != false_label:
+            out[int(age)] = out.get(int(age), 0) + int(count)
+    return out
+
+
+def build_age_outputs():
+    """
+    Pull applicant age distribution + outcomes and write
+    data/cleaned/outcomes_by_age.csv. Returns (path, all_years_age_rows).
+    """
+    # 1. Age distribution: EntryYear x Age (all years, one POST).
+    age_year_rows, _ = run_grouped_count(["EntryYear", "Age"],
+                                         "count_by_year_age.json")
+    dist_all = _age_counts(age_year_rows)                       # all years
+    dist_pool = _age_counts(age_year_rows, AGE_POOL_YEARS)      # EY2020-25
+
+    # 2. Outcomes by age: EntryYear x Age x outcome flag (one POST each).
+    acc_rows, _ = run_grouped_count(["EntryYear", "Age", "IsAccepted"],
+                                    "count_by_year_age_accepted.json")
+    mat_rows, _ = run_grouped_count(["EntryYear", "Age", "IsMatriculated"],
+                                    "count_by_year_age_matriculated.json")
+    accepted = _age_flag_true(acc_rows, "no", AGE_POOL_YEARS)
+    matriculated = _age_flag_true(mat_rows, "no", AGE_POOL_YEARS)
+
+    # 3. outcomes_by_age.csv (pooled EY2020-2025).
+    rows = []
+    for age in sorted(dist_pool):
+        n = dist_pool[age]
+        acc = accepted.get(age, 0)
+        mat = matriculated.get(age, 0)
+        if n >= AGE_SMALL_N:
+            acc_rate = round(acc / n, 4)
+            mat_rate = round(mat / n, 4)
+        else:
+            acc_rate = ""           # blank rates for small-n tail
+            mat_rate = ""
+        rows.append([age, n, acc, mat, acc_rate, mat_rate, AGE_POOL_LABEL])
+    path = _write_csv(
+        "outcomes_by_age.csv",
+        ["age", "applicants", "accepted", "matriculated",
+         "acceptance_rate", "matriculation_rate", "years_pooled"],
+        rows)
+
+    # 4. Age x Residency (TX vs non-TX), pooled, best-effort headline file.
+    res_rows, _ = run_grouped_count(["EntryYear", "Age", "Residency"],
+                                    "count_by_year_age_residency.json")
+    res = {}        # (age, residency) -> count
+    for year, age, residency, count in res_rows:
+        if age is None or int(year) not in AGE_POOL_YEARS:
+            continue
+        if residency not in ("Texas Resident", "Non Resident"):
+            continue
+        res[(int(age), residency)] = res.get((int(age), residency), 0) + int(count)
+    res_out = []
+    for (age, residency) in sorted(res):
+        res_out.append([age, residency, res[(age, residency)], AGE_POOL_LABEL])
+    res_path = _write_csv(
+        "age_by_residency.csv",
+        ["age", "residency", "applicants", "years_pooled"],
+        res_out)
+
+    # --- Run summary: the TAIL is the point -------------------------------
+    print(f"\nApplicant age distribution ({AGE_POOL_LABEL} pooled):")
+    pool_ages = sorted(dist_pool)
+    total = sum(dist_pool.values())
+    print(f"  ages present: {pool_ages[0]}..{pool_ages[-1]}  "
+          f"(total applicants {total})")
+    modal = max(dist_pool, key=dist_pool.get)
+    print(f"  modal age: {modal} (n={dist_pool[modal]})")
+    # tail counts
+    print("  tail (age >= 50), pooled EY2020-2025:")
+    for age in pool_ages:
+        if age >= 50:
+            acc = accepted.get(age, 0)
+            print(f"    age {age:>2}: applicants={dist_pool[age]:>3}  "
+                  f"accepted={acc}")
+
+    print(f"\nFiles written:\n  {path}\n  {res_path}")
+    return path, age_year_rows
+
+
+# ---------------------------------------------------------------------------
 # Main extraction routine
 # ---------------------------------------------------------------------------
 def main():
@@ -437,6 +551,9 @@ def main():
     # --- 7. GPA × MCAT acceptance grid (pooled EY2020-2025) ---------------
     grid_path, grid_res_path = build_gpa_mcat_grid()
 
+    # --- 7b. Applicant age distribution & outcomes (pooled EY2020-2025) ----
+    age_path, _ = build_age_outputs()
+
     # --- 8. Run summary ----------------------------------------------------
     print("\nFunnel by entry year:")
     print(f"{'year':>6}{'applicants':>12}{'interviewed':>13}"
@@ -456,7 +573,7 @@ def main():
 
     print("\nFiles written:")
     for p in [funnel_path, residency_path, type_path, scores_path,
-              grid_path, grid_res_path]:
+              grid_path, grid_res_path, age_path]:
         if p:
             print(f"  {p}")
     print("\nDone.")

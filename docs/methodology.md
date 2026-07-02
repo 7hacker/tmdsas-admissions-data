@@ -71,6 +71,7 @@ integer indices. The `S` header tags such a column with a `DN` key (e.g.
   section scores, and the two GPAs, by `EntryYear`, with optional `WHERE`
   filters for the accepted / matriculated cohorts.
 - **GPA × MCAT grid**: two grouped cross-tab queries (see next section).
+- **Age**: distribution and outcomes by integer `Age` (see §5).
 
 ### 4. The GPA × MCAT acceptance grid
 
@@ -104,6 +105,30 @@ integer indices. The `S` header tags such a column with a `DN` key (e.g.
   residency grid, all in the extreme high-GPA-low-MCAT / low-GPA-high-MCAT
   corners.)
 
+### 5. Applicant age distribution & outcomes
+
+`build_age_outputs()` produces `outcomes_by_age.csv` and `age_by_residency.csv`.
+
+- **Source column.** `Age` is an integer column (conceptualschema `DataType 4`,
+  `FormatString "0"`, `DefaultAggregate 2`), the applicant's age. It is exposed
+  at **individual-year granularity** — grouping by `Age` returns one row per
+  exact age, so the public report reveals cells of size 1 (e.g. a single
+  applicant aged 73 or 79). Observed range: **14-79**, no null ages.
+- **Queries.** `EntryYear × Age` for the distribution, plus
+  `EntryYear × Age × IsAccepted` and `EntryYear × Age × IsMatriculated` for the
+  outcomes, and `EntryYear × Age × Residency` for the residency split — four
+  grouped-count POSTs total.
+- **Pooling EY2020-2025.** The same six completed cycles as the GPA × MCAT grid
+  are pooled for `outcomes_by_age.csv` and `age_by_residency.csv`. (A full
+  all-years EY2016-2026 distribution is also computable from the raw
+  `count_by_year_age.json`.)
+- **Small-n suppression.** Ages with `< 10` pooled applicants keep their counts
+  but have **blank** `acceptance_rate` / `matriculation_rate`. This covers
+  essentially the entire age tail above ~45 and below ~18.
+- **Re-identification note.** Because age is individual-granularity, the extreme
+  tail is identifiable; we publish the counts (the public dashboard already
+  exposes them) but never any derived rate for those singleton cells.
+
 ## How to reproduce
 
 No dependencies beyond Python 3 standard library:
@@ -112,8 +137,9 @@ No dependencies beyond Python 3 standard library:
 python3 src/extract_tmdsas.py
 ```
 
-This makes ~22 polite POST requests (one per grouped/averaged query, including
-the two GPA × MCAT grid cross-tabs), writes the raw JSON responses to
+This makes ~26 polite POST requests (one per grouped/averaged query, including
+the two GPA × MCAT grid cross-tabs and the four age queries), writes the raw
+JSON responses to
 `data/raw/`, the tidy CSVs to `data/cleaned/`, and prints a run summary
 including the funnel table, residency acceptance rates, and the grid summary.
 
@@ -134,6 +160,10 @@ including the funnel table, residency acceptance rates, and the grid summary.
   (`520+`); pooled overall ≈ 39% (matches the EY2020-2025 funnel). Residency
   split: within the same cell, Texas Resident ≫ Non Resident (e.g.
   `4.00 × 515-519`: ~93% vs ~38%).
+- **Age distribution is plausible**: modal age 21, median 22, range 14-79;
+  acceptance rate peaks ~44-50% at age 20-21 and settles ~20-22% through the
+  late-20s-to-40s range — it does not collapse to zero with age. Pooled
+  applicant total across ages (53,836) matches the EY2020-2025 funnel sum.
 
 ## Known caveats
 
